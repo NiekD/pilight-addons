@@ -20,7 +20,7 @@ IF .... VAR(mywebswitch.response, b) IS two THEN ...
 
 Here we need to use IS (or ISNOT) because the value of "b" is a string.
 
-The VAR function takes an optional third parameter that will at as default if the name searched for doesn't exist or is not part of a name=value pair. Otherwise the string "?" will be returned which will cause an error when used with an arithmetic operator!
+The VAR function takes an optional third parameter that will be returned if the name searched for doesn't exist or is not part of a name=value pair. Otherwise the string "?" will be returned which will cause an error when used with an arithmetic operator!
 
 So, if c is supposed to have a numerc value but doesn't exist, an error will occur if you do:
 ```
@@ -31,4 +31,4 @@ but not if you do:
 ```
  IF ... VAR(mywebswitch.response, c, 0) != 0 THEN ...
 ```
-Of course you should choose a default value that normally will not be retuned.
+In genaral you should choose a default value that normally will not be returned.
