@@ -1,6 +1,6 @@
 # VAR function
 
-The VAR function can be used together with the webswitch protocol (see the protocols folder), to get a named value from the "response" option if it is in query string format (name=value pairs separated by "&"). The type of the value returned by the VAR function can be either a number, or a string, depending on the value.
+The VAR function can be used together with the webswitch protocol (see the protocols folder) to get a named value from the response string if that is in query string format (name=value pairs separated by "&"). The type of the value returned by the VAR function can be either a number, or a string, depending on the value.
 
 Example:
 
