@@ -1,6 +1,6 @@
 # webswitch protocol
 
-The webswitch protocol looks like the program protocol, but instead of starting and stopping a local program, it performs a HTTP GET or POST request. The config of this protocol looks like this:
+The webswitch protocol is similar to the program protocol, but instead of starting and stopping a local program, it performs a HTTP GET or POST request. The config of this protocol looks like this:
 
 ``` 
               "bewatering": {
@@ -23,14 +23,13 @@ The webswitch protocol looks like the program protocol, but instead of starting 
 ```
 *All options shown above are mandatory, except "err_response".*
 
-The webswitch is a pending switch. In the GUI you can see that it can be in one of three states: "Stopped", "Pending" and "Running" (same as program protocol). If the webswitch is activated when it is in the "Stopped" state it goes to the "Pending" state and an HTTP(S) request is sent to the URI defined as "on_uri" together with the query string defined as "on_query". The request method used is determined by the "method" option and must be either "GET" ot "POST". The webswitch remains in the Pending state until a response is received or a time-out occurs. 
+The webswitch is a pending switch. It can be in one of three states: "Stopped", "Pending" and "Running" (same as program protocol). If the webswitch is activated when it is in the "Stopped" state it goes to the "Pending" state and an HTTP(S) request is sent to the URI defined as "on_uri" together with the query string defined as "on_query". The request method used is determined by the "method" option and must be either "GET" ot "POST". The webswitch remains in the Pending state until a response is received or a time-out occurs. 
 
-If the response received matches the "on_succes" string, the switch moves to the "Running" state, otherwise it returns to the "Stopped" state.
+If the response received matches the "on_succes" string, the switch moves to the "Running" state, otherwise it reverts to the "Stopped" state.
 
 If the connection fails (returncode is not 200),  "response" is set to "\*CONNECTION FAILED\*". This default string can be replaced by a string of your own choice by adding the optional "err_response" option to the webswitch config. 
 
-If the response is in the form of a query string (one or more name=value pairs separated by "&", like in the config example shown above), you can let the webswitch check one or more of the values, instead of the whole string. This is done by entering name=value pairs for "on_success" and "off_success" as shown in the config example above. Only if all these name=value pairs are present in the result (the order is irrelevant) the webswitch goes to the new state.
-
+If the response is in the form of a query string (one or more name=value pairs separated by "&", like in the config example shown above), you can let the webswitch check one or more of the values in it, otherwise it will check the whole string. This is done by entering name=value pairs for "on_success" and "off_success" as shown in the config example above. Only if all these name=value pairs are present in the result (the order is irrelevant) the webswitch goes to the new state.
 If you want to use one or more of the values in your rules, you can use the VAR function to select them by name.
 
 Switching from "Running" to "Stopped" works the same way using the corresponding uri -query and success values.
