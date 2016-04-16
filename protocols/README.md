@@ -36,7 +36,7 @@ Switching from "Running" to "Stopped" works the same way using the corresponding
 
 # wunderful protocol
 
-The wunderful protocol is an extended version of the wunderground protocol. It provides a lot of data of the current weather, the forecast for the next hour and weather alerts. Just like the weatherunderground protocol, you need an api-key to let the protocol get access to the weather underground api.
+The wunderful protocol is an extended version of the wunderground protocol. It provides a lot of data of the current weather, the forecast for the next hour and weather alerts. Just like the wunderground protocol, you need an api-key to let the protocol get access to the weather underground api.
 
 ```
                 "ws": {
