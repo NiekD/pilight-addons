@@ -126,6 +126,7 @@ static int run(struct rules_t *obj, struct JsonNode *arguments, char **ret, enum
 	if (strcmp(name, varname) == 0) {
 		strncpy(p, token1+pos+1, strlen(token1));
 		FREE(name);
+		FREE(varstring_copy);
 		return 0;
 	}
 	while(token1 = strtok(NULL, "&")) {
