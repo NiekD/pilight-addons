@@ -101,12 +101,12 @@ static int run(struct rules_t *obj, struct JsonNode *arguments, char **ret, enum
 		defval = childs->string_;
 	}		
  
-	name = MALLOC(strlen(varstring));
+	name = MALLOC(strlen(varstring)+1);
 	if(!name) {
 		logprintf(LOG_ERR, "out of memory");
 		exit(EXIT_FAILURE);
 	}
-	varstring_copy = MALLOC(strlen(varstring));
+	varstring_copy = MALLOC(strlen(varstring)+1);
 	if(!varstring_copy) {
 		logprintf(LOG_ERR, "out of memory");
 		exit(EXIT_FAILURE);
