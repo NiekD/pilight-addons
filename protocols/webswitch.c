@@ -100,6 +100,7 @@ static void *thread(void *param) {
 	json_find_string(json, "off_success", &offsuccess);
 	json_find_string(json, "err_response", &errresponse);
 	json_find_string(json, "response", &response);
+	logprintf(LOG_DEBUG, response);
 	json_find_string(json, "state", &state);
 
 	struct settings_t *lnode = MALLOC(sizeof(struct settings_t));
