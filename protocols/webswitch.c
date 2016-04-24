@@ -364,7 +364,7 @@ static void *execute(void *param) {
 				exit(EXIT_FAILURE);
 			}
 			match = 0;
-			logprintf(LOG_DEBUG, "****************************** strcpy(p->response, data)" )
+			logprintf(LOG_DEBUG, "****************************** strcpy(p->response, data)" );
 			strcpy(p->response, data);
 			token = strtok(successcode, "&");
 			if(token != NULL && strlen(token) > 0) {
