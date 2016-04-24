@@ -359,6 +359,10 @@ static void *execute(void *param) {
 			strcpy(p->response, data);
 		}
 	} else {
+			if((p>response = MALLOC(strlen(data)+1)) == NULL) {
+			fprintf(stderr, "out of memory\n");
+				exit(EXIT_FAILURE);
+			}
 			match = 0;
 			strcpy(p->response, data);
 			token = strtok(successcode, "&");
