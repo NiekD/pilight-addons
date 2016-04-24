@@ -346,6 +346,7 @@ static void *execute(void *param) {
 		data = http_get_content(url, &tp, &ret, &size);
 	}
 	else {
+		logprintf(LOG_DEBUG, "Webswitch: Method POST");
 		data = http_post_content(url, &tp, &ret, &size, contype, post);
 	}
 	
@@ -365,7 +366,6 @@ static void *execute(void *param) {
 				exit(EXIT_FAILURE);
 			}
 			match = 0;
-			logprintf(LOG_DEBUG, "****************************** strcpy(p->response, data)" );
 			strcpy(p->response, data);
 			token = strtok(successcode, "&");
 			if(token != NULL && strlen(token) > 0) {
@@ -436,8 +436,6 @@ static void *execute(void *param) {
 }
 
 static int createCode(JsonNode *code) {
-	logprintf(LOG_DEBUG, "**********************************createCode");
-	double itmp = 0;
 	int state = -1;
 	double id = 0;
 	int free_response = 0;
