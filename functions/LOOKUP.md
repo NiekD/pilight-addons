@@ -23,12 +23,12 @@ Let's say we want to display the state of one of our devices in a label. As an e
                         "state": "off"
                 },
 ```
-We want to show the state of mylamp translated to our own language in mylabel.
+We want to show the state of mylamp translated into our own language in mylabel.
 Of course we could create separate rules for different states to achieve that, but using LOOKUP, it can be done in one rule:
 ```
 "IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(on=aan&off=uit, mylamp.state)";
 ```
-We can use (dummy) LABEL devices to store such lists when they are accessed by multiple rules. Simply  add a label to your config like:
+We can use (dummy) LABEL devices to store such lists if they are used by multiple rules. Simply  add a label to your config like:
 ```
                 "translate": {
                         "protocol": [ "generic_label" ],
@@ -40,7 +40,9 @@ We can use (dummy) LABEL devices to store such lists when they are accessed by m
                 },
 ```
 This also gives us a simple way of storing variables dynamically by writing key=value pairs to a label device:
-IF ... THEN label DEVICE mylabel TO state=on&
+```
+IF ... THEN label DEVICE mylabel TO state=on&.....
+```
 The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, or a single asterisk (*).   The string or number provided will be returned if the key searched for doesn't exist.  If an asterisk is entered, the key itself will be returned if the key is not present in the list.
 Without the third parameter, the string "?" will be returned if the key is not found.
 The type of the value returned by the LOOKUP function can be either a number, or a string, depending on its value.
