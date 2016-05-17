@@ -1,10 +1,14 @@
 # LOOKUP function
 
-The LOOKUP function is intended to fetch values from lists of key=value pairs separated by "&" such as 
+The LOOKUP function has th format:
+```
+LOOKUP(haystack, key, default)
+```
+and is intended to fetch values from lists of key=value pairs separated by "&" such as 
 ```
 key1=value1&key2=value2&......
 ```
-Such a list can be a fixed string, or a device value. Although the biggest advantage of the LOOKUP function is when used with webswitch devices returning several parameters, it can be quite useful to simplify your rules. 
+Such a list can be a fixed string, or a device variable. Although the biggest advantage of the LOOKUP function is when used with webswitch devices returning several parameters, it can be quite useful to simplify your rules. 
 Let's say we want to display the state of one of our devices in a label. As an example, we could have in our config:
 ```
                  "mylabel": {
@@ -41,9 +45,11 @@ We can use (dummy) LABEL devices to store such lists if they are used by multipl
 ```
 This also gives us a simple way of storing variables dynamically by writing key=value pairs to a label device:
 ```
-IF ... THEN label DEVICE mylabel TO state=on&.....
+IF ... THEN label DEVICE mylabel TO state= somedevice.value.....
 ```
-The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, or a single asterisk (*).   The string or number provided will be returned if the key searched for doesn't exist.  If an asterisk is entered, the key itself will be returned if the key is not present in the list.
+The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, a single asterisk (*), or a single dollar sign ($). The string or number provided will be returned if the key searched for doesn't exist.  
+If an asterisk is entered, the key itself will be returned in that case and with a dollar sign the whole "haystack" will be returned.
+
 Without the third parameter, the string "?" will be returned if the key is not found.
 The type of the value returned by the LOOKUP function can be either a number, or a string, depending on its value.
 Example:
