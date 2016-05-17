@@ -1,6 +1,6 @@
 # LOOKUP function
 
-The LOOKUP function has th format:
+The LOOKUP function has the following format:
 ```
 LOOKUP(haystack, key, default)
 ```
@@ -48,7 +48,7 @@ and do
 "IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(translate.label, mylamp.state)";
 ```
 
-This also gives us a simple way of storing (nad retrieving) variables dynamically by writing key=value pairs to a label device:
+This also gives us a simple way of storing (and retrieving) variables dynamically by writing key=value pairs to a label device:
 ```
 IF ... THEN label DEVICE mylabel TO state= somedevice.value & id= somedevice.id.....
 ```
