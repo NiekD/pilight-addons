@@ -80,4 +80,4 @@ but not if you do:
 ```
  IF ... LOOKUP(mydevice.option, c, 0) != 0 THEN ...
 ```
-In genaral you should choose a default value that normally will not be returned.
+In general you should choose a default value that normally will not be returned.
