@@ -52,7 +52,7 @@ This also gives us a simple way of storing (nad retrieving) variables dynamicall
 ```
 IF ... THEN label DEVICE mylabel TO state= somedevice.value & id= somedevice.id.....
 ```
-*N.B. Spaces are required to separate the device values from the = and & signs. These spaces are ignored by the LOOKUP function.*
+**N.B. Spaces are required here to separate the device values from the = and & signs. These spaces are ignored by the LOOKUP function.**
 
 The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, a single asterisk (*), or a single dollar sign ($). The string or number provided will be returned if the key searched for doesn't exist.  
 If an asterisk is entered, the key itself will be returned in that case and with a dollar sign the whole "haystack" will be returned.
