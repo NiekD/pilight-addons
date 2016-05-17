@@ -9,7 +9,7 @@ and is intended to fetch values from lists of key=value pairs separated by "&" s
 key1=value1&key2=value2&......
 ```
 Such a list can be a fixed string, or a device variable. Although the biggest advantage of the LOOKUP function is when used with webswitch devices returning several parameters, it can be quite useful to simplify your rules. 
-Let's say we want to display the state of one of our devices in a label. As an example, we could have in our config:
+Let's say we want to display the state of one of our devices in a label in our own language. As an example, we could have in our config:
 ```
                  "mylabel": {
                         "protocol": [ "generic_label" ],
@@ -27,8 +27,8 @@ Let's say we want to display the state of one of our devices in a label. As an e
                         "state": "off"
                 },
 ```
-We want to show the state of mylamp translated into our own language in mylabel.
-Of course we could create separate rules for different states to achieve that, but using LOOKUP, it can be done in one rule:
+We wish to show the state of mylamp translated into our own language in mylabel.
+Of course we could create separate rules for different states to achieve that, but using LOOKUP, it can simply be done in one rule:
 ```
 "IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(on=aan&off=uit, mylamp.state)";
 ```
@@ -43,10 +43,18 @@ We can use (dummy) LABEL devices to store such lists if they are used by multipl
                         "color": "black"
                 },
 ```
-This also gives us a simple way of storing variables dynamically by writing key=value pairs to a label device:
+and do
 ```
-IF ... THEN label DEVICE mylabel TO state= somedevice.value.....
+"IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(translate.label, mylamp.state)";
 ```
+
+This also gives us a simple way of storing (nad retrieving) variables dynamically by writing key=value pairs to a label device:
+```
+IF ... THEN label DEVICE mylabel TO state= somedevice.value & id= somedevice.id.....
+```
+*
+N.B. Spaces are required to separate the device values from the = and & signs. These spaces are ignored by the LOOKUP function.
+*
 The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, a single asterisk (*), or a single dollar sign ($). The string or number provided will be returned if the key searched for doesn't exist.  
 If an asterisk is entered, the key itself will be returned in that case and with a dollar sign the whole "haystack" will be returned.
 
