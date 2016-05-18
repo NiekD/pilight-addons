@@ -99,7 +99,7 @@ Devices
                 "bewatering_status": {
                         "protocol": [ "webswitch" ],
                         "id": [{
-                                "id": 4
+                                "id": 1
                         }],
                         "method": "GET",
                         "on_uri": "http://192.168.1.13/gardena/",
@@ -114,25 +114,33 @@ Devices
                 "statuslabel": {
                         "protocol": [ "generic_label" ],
                         "id": [{
-                                "id": 21
+                                "id": 1
                         }],
                         "label": "[ 2016-05-16 10:29 ] - Besturing: pilight - Bewatering: uit - Flow: uit - Bodem: vochtig - Temp 10 gr - Luchtvochtigheid: 52 %",
                         "color": "black"
                 },
+		"translate": {
+			"protocol": [ "generic_label" ],
+			"id": [{
+				"id": 2
+			}],
+			"label": "on=aan&off=uit&running=aan&stopped=uit&moist=vochtig&dry=droog&Red=Rood&Orange=Oranje&Yellow=Geel&None=Geen&Cloudy=Bewolkt&Sunny=Zonnig&Clear=Onbewolkt&Mostly Clear=Overwegend helder&Mostly Cloudy=Overwegend bewolkt&Partly Cloudy=Licht bewolkt&Sunny/Wind=Zonnig/Wind&Light Rain Showers=Lichte regenbuien&Mostly Sunny=Overwgend zonnig&Partly Cloudy/Wind=Half bewolkt/Wind&Mostly Sunny/Wind=Overwegend zonnig/Wind&Scattered Clouds=Wisselend bewolkt",
+			"color": "black"
+		},
+                
   ```
 
 Rules:
 ```
  		"statusrequest": {
- 		  "rule": "IF dt.second == 59 THEN switch DEVICE bewatering_status TO running",
+ 			 "rule": "IF dt.second == 59 THEN switch DEVICE bewatering_status TO running",
 			"active": 1
 		},
 		"bewateringstatus_label": {
-			"rule": "IF bewatering_status.state IS stopped THEN label DEVICE statuslabel TO [ LOOKUP(bewatering_status.response, timestamp) ] - Besturing: LOOKUP(bewatering_status.response, besturing) - Bewatering: LOOKUP(translate.label, LOOKUP(bewatering_status.response, bewatering)) - Flow: LOOKUP(translate.label, LOOKUP(bewatering_status.response, flow)) - Bodem: L		"bewateringstatus_request": {
-OOKUP(translate.label, LOOKUP(bewatering_status.response, soil)) - Temp LOOKUP(bewatering_status.response, temp) gr - Luchtvochtigheid: LOOKUP(bewatering_status.response, humi) %",
+			"rule": "IF bewatering_status.state IS stopped THEN label DEVICE statuslabel TO [ LOOKUP(bewatering_status.response, timestamp) ] - Besturing: LOOKUP(bewatering_status.response, besturing) - Bewatering: LOOKUP(translate.label, LOOKUP(bewatering_status.response, bewatering)) - Flow: LOOKUP(translate.label, LOOKUP(bewatering_status.response, flow)) - Bodem: LOOKUP(translate.label, LOOKUP(bewatering_status.response, soil)) - Temp LOOKUP(bewatering_status.response, temp) gr - Luchtvochtigheid: LOOKUP(bewatering_status.response, humi) %",
 			"active": 1
 		}
 
 ```
 Maybe this needs some explanation. 
-The webswitch is activated once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. The second rule extracts those values using the LOOKUP function. In some cases the retreived value is translated also using LOOKUP (the nested LOOKUP functions)
+The webswitch is activated once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. The second rule extracts those values using the LOOKUP function and puts them into a label. In some cases the retreived value is translated also using LOOKUP (see the nested LOOKUP functions) and the "translate" label.
