@@ -21,16 +21,17 @@ Let's say we want to display the state of one of our devices in a label in our o
                         "id": [{
                                 "id": 1
                         }],
-                        "label": ""
+                        "label": "",
                         "color": "black"
-                    "mylamp": {
+                  },
+                  "mylamp": {
                         "protocol": [ "kaku_switch" ],
                         "id": [{
                                 "id": 12345678,
                                 "unit": 0
                         }],
                         "state": "off"
-                },
+                  },
 ```
 We wish to show the state of mylamp translated into our own language in mylabel.
 Of course we could create separate rules for different states to achieve that, but using LOOKUP, it can simply be done in one rule:
@@ -58,7 +59,7 @@ If an asterisk is entered, the key itself will be returned in that case and with
 
 Without the third parameter, the string "?" will be returned if the key is not found.
 
-** Value types
+### Value types
 The type of the value returned by the LOOKUP function can be either a number, or a string, depending on its value.
 Example:
 Let's assume that the value of label1.label "a=1&b=two"
@@ -91,7 +92,7 @@ IF ... THEN label DEVICE mylabel TO state= somedevice.value & id= somedevice.id.
 **N.B. Spaces are required here to separate the device values from the = and & signs. These spaces are ignored by the LOOKUP function.**
 You then can use the LOOKUP funtion to retrieve and use the values in your rules.
 
-**Some more advanced examples
+## Some more advanced examples
 
 Devices
 ```
@@ -105,12 +106,12 @@ Devices
                         "off_uri": "http://192.168.1.13/gardena/",
                         "on_query": "c=status",
                         "off_query": "c=status",
-                        "on_success": "a=b",
-                        "off_success": "a=b",
+                        "on_success": "x",
+                        "off_success": "x",
                         "response": "timestamp=2016-05-16 10:29&besturing=pilight&bewatering=off&flow=off&soil=moist&temp=10&humi=52",
                         "state": "stopped"
                 },
-                                "statuslabel": {
+                "statuslabel": {
                         "protocol": [ "generic_label" ],
                         "id": [{
                                 "id": 21
@@ -122,5 +123,16 @@ Devices
 
 Rules:
 ```
- 
+ 		"statusrequest": {
+ 		  "rule": "IF dt.second == 59 THEN switch DEVICE bewatering_status TO running",
+			"active": 1
+		},
+		"bewateringstatus_label": {
+			"rule": "IF bewatering_status.state IS stopped THEN label DEVICE statuslabel TO [ LOOKUP(bewatering_status.response, timestamp) ] - Besturing: LOOKUP(bewatering_status.response, besturing) - Bewatering: LOOKUP(translate.label, LOOKUP(bewatering_status.response, bewatering)) - Flow: LOOKUP(translate.label, LOOKUP(bewatering_status.response, flow)) - Bodem: L		"bewateringstatus_request": {
+OOKUP(translate.label, LOOKUP(bewatering_status.response, soil)) - Temp LOOKUP(bewatering_status.response, temp) gr - Luchtvochtigheid: LOOKUP(bewatering_status.response, humi) %",
+			"active": 1
+		}
+
 ```
+Maybe this needs some explanation. 
+The webswitch is activated once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. The second rule extracts those values using the LOOKUP function. In some cases the retreived value is translated also using LOOKUP (the nested LOOKUP functions)
