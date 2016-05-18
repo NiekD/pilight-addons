@@ -166,6 +166,6 @@ if the label contains a string, or
 ```
 IF LOOKUP(mylabel.label, $$$$, $) == 1
 ```
-if the label contans a number
+if the label contains a number
 
 LOOKUP will not be able to find $$$$ as a key. The $ as third parameter will force LOOKUP to return the full contents of mylabel.label which ca be a string or a number.
