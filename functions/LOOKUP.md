@@ -68,22 +68,22 @@ Example:
 Let's assume that the value of label1.label "a=1&b=two"
 To use the value of "a" in a rule we can do:
 ```
-IF ... LOOKUP(mydevice.option, a) == 1 THEN ...
+IF ... LOOKUP(label1.label, a) == 1 THEN ...
 ```
 We need to use ==, because the value of "a" is numeric.
 To use the value of "b":
 ```
-IF .... LOOKUP(mydevice.option, b) IS two THEN ...
+IF .... LOOKUP(label1.label, b) IS two THEN ...
 ```
 Here we need to use IS (or ISNOT) because the value of "b" is a string.
 If you are using the result of the LOOKUP function with an operator, it is advised to set a value of the type matching the operator as third parameter. 
 So, if c is supposed to have a numeric value but doesn't exist, an error will occur if you do:
 ```
- IF ... LOOKUP(mydevice.option, c) != 0 THEN ...
+ IF ... LOOKUP(label1.label, c) != 0 THEN ...
 ```
 but not if you do:
 ```
- IF ... LOOKUP(mydevice.option, c, 0) != 0 THEN ...
+ IF ... LOOKUP(label1.label, c, 0) != 0 THEN ...
 ```
 In general you should choose a default value that normally will not be returned.
 
