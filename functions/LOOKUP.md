@@ -93,7 +93,10 @@ Because the key=vakue pairs can be stored in generic label devices, this also gi
 IF ... THEN label DEVICE mylabel TO state= somedevice.value & id= somedevice.id.....
 ```
 **N.B. Spaces are required here to separate the device values from the = and & signs. These spaces are ignored by the LOOKUP function.**
-You then can use the LOOKUP funtion to retrieve and use the values in your rules.
+You then can use the LOOKUP funtion to retrieve and use the values in your rules:
+```
+IF LOOKUP(mylabel.label, state) AND LOOKUP(mylabel.label, id) == 100 ....
+```
 
 ## Some more advanced examples
 
