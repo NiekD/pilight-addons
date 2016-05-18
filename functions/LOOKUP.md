@@ -2,13 +2,13 @@
 
 The LOOKUP function has the following format:
 ```
-LOOKUP(haystack, key, default)
+LOOKUP(haystack, needle, default)
 ```
 and is intended to fetch values from lists of key=value pairs separated by "&" such as 
 ```
-key1=value1&key2=value2&......
+LOOKUP(on=aan&off=uit, mydevice.state) ......
 ```
-Such a list can be a fixed string, or a device variable. Although the biggest advantage of the LOOKUP function is when used with webswitch devices returning several parameters, it can be quite useful to simplify your rules. 
+Such a list can be a fixed string as shown above, or a device variable. Although the biggest advantage of the LOOKUP function is when used with webswitch devices returning multiple parameter values, it can be quite useful to simplify your rules. 
 Let's say we want to display the state of one of our devices in a label in our own language. As an example, we could have in our config:
 ```
                  "mylabel": {
