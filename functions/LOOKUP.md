@@ -1,5 +1,8 @@
 # LOOKUP function
 
+## Limitation
+During the development of the LOOKUP function, some bugs in the eventing I encountered some memory allocation bugs in events.c. A fixed version of events.c is required to use the LOOKUP function. 
+
 ## Introduction
 The LOOKUP function has the following format:
 ```
@@ -94,7 +97,7 @@ You then can use the LOOKUP funtion to retrieve and use the values in your rules
 
 ## Some more advanced examples
 
-Devices
+Devices:
 ```
                 "bewatering_status": {
                         "protocol": [ "webswitch" ],
@@ -144,3 +147,23 @@ Rules:
 ```
 Maybe this needs some explanation. 
 The webswitch is activated once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. The second rule extracts those values using the LOOKUP function and puts them into a label. In some cases the retreived value is translated also using LOOKUP (see the nested LOOKUP functions) and the "translate" label.
+
+## Using label value in rules
+Normally it is impossible to use the label value of a generic_label device in your rules, because the label can be both a number or a string. That makes a rule with this fail:
+```
+IF mylabel.label IS something ....
+```
+and this too:
+```
+IF mylabel.label == 1 ....
+```
+
+You can use LOOKUP to overcome this limitation as follows
+```
+IF LOOKUP(mylabel.label, $$$$, $) IS something
+```
+if the label contains a string, or
+```
+IF LOOKUP(mylabel.label, $$$$, $) == 1
+```
+if the label contans a number
