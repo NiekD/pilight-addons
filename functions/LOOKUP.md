@@ -1,7 +1,7 @@
 # LOOKUP function
 
 ## Limitation
-During the development of the LOOKUP function, some bugs in the eventing I encountered some memory allocation bugs in events.c. A fixed version of events.c is required to use the LOOKUP function. 
+During the development of the LOOKUP function I ran into some memory allocation bugs in events.c. A fixed version of events.c is required to use the LOOKUP function. 
 
 ## Introduction
 The LOOKUP function has the following format:
