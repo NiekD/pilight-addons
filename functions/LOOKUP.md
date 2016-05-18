@@ -39,7 +39,7 @@ Let's say we want to display the state of one of our devices in a label in our o
 We wish to show the state of mylamp translated into our own language in mylabel.
 Of course we could create separate rules for different states to achieve that, but using LOOKUP, it can simply be done in one rule:
 ```
-"IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(on=aan&off=uit, mylamp.state)";
+"IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO Mijn lamp is LOOKUP(on=aan&off=uit, mylamp.state)";
 ```
 We can use (dummy) LABEL devices to store such lists if they are used by multiple rules. Simply  add a label to your config like:
 ```
@@ -168,4 +168,4 @@ IF LOOKUP(mylabel.label, $$$$, $) == 1
 ```
 if the label contains a number
 
-LOOKUP will not be able to find $$$$ as a key. The $ as third parameter will force LOOKUP to return the full contents of mylabel.label which ca be a string or a number.
+LOOKUP will not be able to find $$$$ as a key. The $ as third parameter will force LOOKUP to return the full contents of mylabel.label which can be a string or a number.
