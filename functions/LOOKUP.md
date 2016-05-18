@@ -52,7 +52,7 @@ and do
 ```
 "IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(translate.label, mylamp.state)";
 ```
-*** Handling missing variables
+### Handling missing variables
 The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, a single asterisk (*), or a single dollar sign ($). The string or number provided will be returned if the key searched for doesn't exist.  
 If an asterisk is entered, the key itself will be returned in that case and with a dollar sign the whole "haystack" will be returned.
 
@@ -83,7 +83,7 @@ but not if you do:
 ```
 In general you should choose a default value that normally will not be returned.
 
-### Storing and retrieving own variables danamically
+### Storing and retrieving own variables dynamically
 Because the key=vakue pairs can be stored in generic label devices, this also gives us a simple way of storing (and retrieving) variables dynamically by writing key=value pairs to a label device:
 ```
 IF ... THEN label DEVICE mylabel TO state= somedevice.value & id= somedevice.id.....
