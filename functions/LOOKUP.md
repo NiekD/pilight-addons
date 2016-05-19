@@ -98,7 +98,7 @@ You then can use the LOOKUP funtion to retrieve and use the values in your rules
 IF LOOKUP(mylabel.label, state) IS some string AND LOOKUP(mylabel.label, id, -1) == some number....
 ```
 
-## Some more advanced examples
+## A more advanced example
 
 Devices:
 ```
