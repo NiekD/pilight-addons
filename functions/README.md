@@ -6,7 +6,7 @@ During the development of the LOOKUP function I ran into a memory allocation bug
 ## Introduction
 The LOOKUP function has the following format:
 ```
-LOOKUP(haystack, needle, default)
+LOOKUP(haystack, needle[, default])
 ```
 and is intended to fetch values from lists of key=value pairs separated by "&" such as 
 ```
