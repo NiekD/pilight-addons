@@ -8,7 +8,7 @@ Two protocols:
 
 A function:
 
-* LOOKUP, which can fetch individual values from a query string (name=value pairs separated by "&"). Usefull in combination with the webswitch protocol.
+* LOOKUP, which can fetch individual values from a query string (name=value pairs separated by "&"). Usefull in combination with the webswitch protocol and for translation/conversion of device variables.
  
 An operator:
 
