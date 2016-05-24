@@ -84,3 +84,17 @@ The wunderful protocol is an extended version of the wunderground protocol. It p
 ```
 
 Options with names ending with "fc" contain forecast data.
+
+# generic_counter protocol
+The generic_counter protocol is a simple protocol to be used by rules to count events. It can be manipulated with the count action (in progress). The config of this protocol looks like this:
+
+```
+                "counter1": {
+                        "protocol": [ "generic_counter" ],
+                        "id": [{
+                                "id": 1
+                        }],
+                        "count": 1
+                },
+```
+
