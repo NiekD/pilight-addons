@@ -3,9 +3,9 @@ The count action is to be used with generic_counter devices (see protocols folde
 
 ## Usage
 ```
-IF ... THEN count DEVICE mycounter UP 1
+IF ... THEN count DEVICE counter1 UP 1
  or
-IF ... THEN count DEVICE mycounter DOWN 2
+IF ... THEN count DEVICE counter1 DOWN 2
  or
-IF ... THEN count DEVICE mycounter TO 20
+IF ... THEN count DEVICE counter1 TO 20
 ```
