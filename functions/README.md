@@ -102,7 +102,7 @@ IF LOOKUP(mylabel.label, state) IS some string AND LOOKUP(mylabel.label, id, -1)
 
 Devices:
 ```
-                "bewatering_status": {
+                "bewatering": {
                         "protocol": [ "webswitch" ],
                         "id": [{
                                 "id": 1
@@ -110,10 +110,10 @@ Devices:
                         "method": "GET",
                         "on_uri": "http://192.168.1.13/gardena/",
                         "off_uri": "http://192.168.1.13/gardena/",
-                        "on_query": "c=status",
-                        "off_query": "c=status",
-                        "on_success": "x",
-                        "off_success": "x",
+                        "on_query": "command=on&checkflow=no",
+                        "off_query": "command=off&checkflow=yes",
+                        "on_success": "bewatering=on",
+                        "off_success": "bewatering=off&flow=off",
                         "response": "timestamp=2016-05-16 10:29&besturing=pilight&bewatering=off&flow=off&soil=moist&temp=10&humi=52",
                         "state": "stopped"
                 },
@@ -138,20 +138,13 @@ Devices:
 
 Rules:
 ```
- 		"statusrequest": {
- 			 "rule": "IF dt.second == 59 THEN switch DEVICE bewatering_status TO running",
-			"active": 1
-		},
-		"bewateringstatus_label": {
-			"rule": "IF bewatering_status.state IS stopped THEN label DEVICE statuslabel TO [ LOOKUP(bewatering_status.response, timestamp) ] - Besturing: LOOKUP(bewatering_status.response, besturing) - Bewatering: LOOKUP(translate.label, LOOKUP(bewatering_status.response, bewatering)) - Flow: LOOKUP(translate.label, LOOKUP(bewatering_status.response, flow)) - Bodem: LOOKUP(translate.label, LOOKUP(bewatering_status.response, soil)) - Temp LOOKUP(bewatering_status.response, temp) gr - Luchtvochtigheid: LOOKUP(bewatering_status.response, humi) %",
+		"bewateringstatus": {
+			"rule": "IF bewatering.state IS stopped OR bewatering.state=running THEN label DEVICE statuslabel TO [ LOOKUP(bewatering_status.response, timestamp) ] - Besturing: LOOKUP(bewatering.response, besturing) - Bewatering: LOOKUP(translate.label, LOOKUP(bewatering.response, bewatering)) - Flow: LOOKUP(translate.label, LOOKUP(bewatering.response, flow)) - Bodem: LOOKUP(translate.label, LOOKUP(bewatering.response, soil)) - Temp LOOKUP(bewatering.response, temp) gr - Luchtvochtigheid: LOOKUP(bewatering.response, humi) %",
 			"active": 1
 		}
 
 ```
-Maybe this needs some explanation. 
-The webswitch is used here as atrigger. It is switched to running once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. Because the on_success value will never match the actual response, the webswitch always returns to the stopped state when the request finishes. 
-
-The second rule extracts values from the response, using the LOOKUP function and puts them into a label. In some cases the retreived value is translated also using LOOKUP (see the nested LOOKUP functions) and the "translate" label.
+The rule extracts values from the response, using the LOOKUP function and puts them into a label. In some cases the retreived value is translated also using LOOKUP (see the nested LOOKUP functions) and the "translate" label.
 
 ## Using label value in rules
 Normally it is impossible to use the label value of a generic_label device in your rules, because the label can be both a number or a string. That makes a rule with this fail:
