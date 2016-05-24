@@ -149,7 +149,9 @@ Rules:
 
 ```
 Maybe this needs some explanation. 
-The webswitch is activated once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. The second rule extracts those values using the LOOKUP function and puts them into a label. In some cases the retreived value is translated also using LOOKUP (see the nested LOOKUP functions) and the "translate" label.
+The webswitch is used here as atrigger. It is switched to running once a minute by the first rule and calls a webservice that returns the state of the watering system as a list of key=value pairs as its response variable. Because the on_success value will never match the actual response, the webswitch always returns to the stopped state when the request finishes. 
+
+The second rule extracts values from the response, using the LOOKUP function and puts them into a label. In some cases the retreived value is translated also using LOOKUP (see the nested LOOKUP functions) and the "translate" label.
 
 ## Using label value in rules
 Normally it is impossible to use the label value of a generic_label device in your rules, because the label can be both a number or a string. That makes a rule with this fail:
