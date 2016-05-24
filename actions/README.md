@@ -1,4 +1,4 @@
-# count action (in progress)
+# count action
 The count action is to be used with generic_counter devices (see protocols folder).
 
 ## Usage
