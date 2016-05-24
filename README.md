@@ -1,12 +1,17 @@
 # pilight-addons
 This repository contains some addons for pilight 7.
 
-Two protocols:
+Three protocols:
 
 * webswitch, which can send HTTP GET/POST requests and return the response
 * wunderful, an extended version of the wunderground protocol
+* generic_counter, a counter that can be manipulated in rules with  the count action (in progress).
 
-A function:
+One action:
+
+* count (in progress), to be used in rules to increment, decrement or set to a specific value.
+
+Two functions (one in progress):
 
 * LOOKUP, which can fetch individual values from a query string (name=value pairs separated by "&"). Usefull in combination with the webswitch protocol and for translation/conversion of device variables.
  
