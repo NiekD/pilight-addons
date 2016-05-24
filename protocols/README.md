@@ -13,8 +13,8 @@ The webswitch protocol is similar to the program protocol, but instead of starti
                         "off_uri": "http://192.168.1.13/gardena.php",
                         "on_query": "c=on",
                         "off_query": "c=off",
-                        "on_success": "bewatering=aan&status=normaal",
-                        "off_success": "bewatering=uit&status=normaal",
+                        "on_success": "status=normaal&bewatering=aan",
+                        "off_success": "status=normaal&bewatering=uit",
                         "err_response": "status=httperror",
                         "response": "bewatering=uit&status=normaal&bodem=nat&flow=uit",
                         "state": "stopped"
