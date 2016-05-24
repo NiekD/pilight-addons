@@ -14,7 +14,7 @@ LOOKUP(on=aan&off=uit, mydevice.state) ......
 ```
 Such a list can be a fixed string as shown above, or a device variable. The needle can be a number, string or a device variable. 
 
-The LOOKUP function is most useful when used with webswitch devices returning multiple parameter values, but it can also help to simplify your rules.
+The LOOKUP function can be used to convert/translate device values, but is most useful when used with webswitch devices returning multiple parameter values (see advanced example).
 ## Usage
 ### Translation of device variables
 Let's say we want to display the state of one of our devices in a label in our own language. As an example, we could have in our config:
@@ -98,7 +98,7 @@ You then can use the LOOKUP funtion to retrieve and use the values in your rules
 IF LOOKUP(mylabel.label, state) IS some string AND LOOKUP(mylabel.label, id, -1) == some number....
 ```
 
-## A more advanced example
+## Advanced example
 
 Devices:
 ```
