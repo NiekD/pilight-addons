@@ -54,7 +54,7 @@ We can use (dummy) LABEL devices to store such lists if they are used by multipl
 ```
 and do
 ```
-"IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO LOOKUP(translate.label, mylamp.state)";
+"IF mylamp.state IS on OR mylamp.state IS off THEN label DEVICE mylabel TO Mijn lamp is LOOKUP(translate.label, mylamp.state)";
 ```
 ### Handling missing variables
 The LOOKUP function takes an optional third parameter. This parameter can be a string, a number, a single asterisk (*), or a single dollar sign ($). The string or number provided will be returned if the key searched for doesn't exist.  
