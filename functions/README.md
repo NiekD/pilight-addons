@@ -48,7 +48,7 @@ We can use (dummy) LABEL devices to store such lists if they are used by multipl
                         "id": [{
                                 "id": 2
                         }],
-                        "label": "on=aan&off=uit&running=aan&stopped=uit&Red=Rood&Orange=Oranje&Yellow=Geel"
+                        "label": "on=aan&off=uit&running=aan&stopped=uit&Red=Rood&Orange=Oranje&Yellow=Geel",
                         "color": "black"
                 },
 ```
