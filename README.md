@@ -1,5 +1,5 @@
 # pilight-addons
-This repository contains some addons for pilight 6/7.
+This repository contains some addons for pilight 7.
 
 Two protocols:
 
@@ -8,7 +8,7 @@ Two protocols:
 
 A function:
 
-* VAR, which can fetch individual values from a query string (name=value pairs separated by "&"). Usefull in combination with the webswitch protocol.
+* LOOKUP, which can fetch individual values from a query string (name=value pairs separated by "&"). Usefull in combination with the webswitch protocol.
  
 An operator:
 
