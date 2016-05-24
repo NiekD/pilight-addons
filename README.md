@@ -9,7 +9,7 @@ Three protocols:
 
 One action:
 
-* count (in progress), to be used in rules to increment, decrement or set to a specific value.
+* count (in progress), to be used in rules to update a generic_counter device (increment, decrement or set to a specific value).
 
 Two functions (one in progress):
 
