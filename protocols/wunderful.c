@@ -16,6 +16,7 @@
 	along with pilight. If not, see	<http://www.gnu.org/licenses/>
 */
 
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -26,7 +27,6 @@
 #include <fcntl.h>
 #include <math.h>
 #include <regex.h>
-#include <time.h>
 #include <sys/stat.h>
 #ifndef _WIN32
 	#ifdef __mips__
@@ -46,6 +46,7 @@
 #include "../../core/binary.h"
 #include "../../core/json.h"
 #include "../../core/gc.h"
+#include "../../core/strptime.h"
 #include "wunderful.h"
 
 #define INTERVAL	300
@@ -97,10 +98,9 @@ static void *thread(void *param) {
 	char *tz = NULL;
 	char *data = NULL;
 	char typebuf[255], *tp = typebuf;
-	char *stmp = NULL, *location = NULL, *winddir = "X", *stationid = "X", *obsdt = "X", *weather = "X", *city = "NA";
+	char *stmp = NULL, *winddir = "X", *stationid = "X", *obsdt = "X", *weather = "X", *city = "NA";
 	char *weatherfc = "X", *winddirfc = "X";
-	char *alarm_descr = "NA", *level_descr = "NA", *alarm_date = "X", *alarm_exp = "X";
-	char *weather2 = NULL, *winddir2 = NULL, *weatherfc2 = NULL, *winddirfc2 = NULL, *alarm_descr2 = NULL, *level_descr2 = NULL;
+	char *alarm_descr = "NA", *level_descr = "NA", *alarm_date = "X", *alarm_exp = "X", *winddir2 = NULL;
 	double alarm_type = 0, alarm_level = 0;
 	double latitude = 0, longitude = 0;
 	double temp = 0, itmp = -1, winddegrees = 0, windspeed = 0, windgust = 0, preciph = 0, precipd = 0, rain = 0, estimated = 0;
@@ -264,23 +264,16 @@ static void *thread(void *param) {
 									exit(EXIT_FAILURE);
 								}
 								strcpy(winddir2, winddir);
-	
+
 								str_replace("North", "N", &winddir2);
 								str_replace("East", "E", &winddir2);
 								str_replace("South", "S", &winddir2);
 								str_replace("West", "W", &winddir2);
-								
-								weather2 = MALLOC(strlen(weather)+1);
-								if(!weather2) {
-									logprintf(LOG_ERR, "out of memory");
-									exit(EXIT_FAILURE);
-								}
-								strcpy(weather2, weather);	
-								
+
 #if !defined(__FreeBSD__) && !defined(_WIN32)
 								size_t maxGroups = 7;
 								regmatch_t groupArray[maxGroups];
-				
+
 								reti = regcomp(&regex, "([R|r]ain)|([D|d]rizzle)|([T|t]hunder)|([S|s]hower)", REG_EXTENDED);
 								if(reti) {
 									logprintf(LOG_ERR, "could not compile regex for wunderground rain");
@@ -294,23 +287,23 @@ static void *thread(void *param) {
 									rain = 1;															
 								}
 								regfree(&regex);
-#endif		
+#endif
 							} else {
 								logprintf(LOG_NOTICE, "api.wunderground.com json has no current_observation key");
 							}
-	
-							if((jtemp = json_find_member(jdata, "hourly_forecast")) != NULL)  {
+
+							if((jtemp = json_find_member(jdata, "hourly_forecast")) != NULL) {
 								if((jtemp2 = json_first_child(jtemp)) != NULL) {
 									has_forecast = 1;
 									if(get_number(jtemp2, "pop", &popfc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no pop key");
-									} else if((jtemp3 = json_find_member(jtemp2, "FCTTIME")) == NULL || get_number(jtemp3, "hour", &fcttime) != 0)  {
+									} else if((jtemp3 = json_find_member(jtemp2, "FCTTIME")) == NULL || get_number(jtemp3, "hour", &fcttime) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no hour key");
 									} else if(json_find_string(jtemp2, "wx", &weatherfc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no wx key");
-									} else if((jfchour = json_find_member(jtemp2, "temp")) == NULL || get_number(jfchour, "metric", &tempfc) != 0)  {
+									} else if((jfchour = json_find_member(jtemp2, "temp")) == NULL || get_number(jfchour, "metric", &tempfc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no temp key");
-									} else if((jfchour = json_find_member(jtemp2, "wspd")) == NULL || get_number(jfchour, "metric", &windspeedfc) != 0)  {
+									} else if((jfchour = json_find_member(jtemp2, "wspd")) == NULL || get_number(jfchour, "metric", &windspeedfc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no wspd key");
 									} else if((jfchour = json_find_member(jtemp2, "wdir")) == NULL) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no wdir key");
@@ -320,30 +313,16 @@ static void *thread(void *param) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no degrees key");
 									} else if(get_number(jtemp2, "humidity", &humifc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no humidity key");
-									} else if((jfchour = json_find_member(jtemp2, "qpf")) == NULL || get_number(jfchour, "metric", &precipfc) != 0)  {
+									} else if((jfchour = json_find_member(jtemp2, "qpf")) == NULL || get_number(jfchour, "metric", &precipfc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no qpf key");
-									} else if((jfchour = json_find_member(jtemp2, "mslp")) == NULL || get_number(jfchour, "metric", &pressurefc) != 0)  {
+									} else if((jfchour = json_find_member(jtemp2, "mslp")) == NULL || get_number(jfchour, "metric", &pressurefc) != 0) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no mslp key");
 									}
-															
-									weatherfc2 = MALLOC(strlen(weatherfc)+1);
-									if(!weatherfc2) {
-										logprintf(LOG_ERR, "out of memory");
-										exit(EXIT_FAILURE);
-									}
-									strcpy(weatherfc2, weatherfc);	
 
-									winddirfc2 = MALLOC(strlen(winddirfc)+1);
-									if(!winddirfc2) {
-										logprintf(LOG_ERR, "out of memory");
-										exit(EXIT_FAILURE);
-									}
-									strcpy(winddirfc2, winddirfc);	
-									
 			#if !defined(__FreeBSD__) && !defined(_WIN32)
 									size_t maxGroups = 7;
 									regmatch_t groupArray[maxGroups];
-					
+
 									reti = regcomp(&regex, "([R|r]ain)|([D|d]rizzle)|([T|t]hunder)|([S|s]hower)", REG_EXTENDED);
 									if(reti) {
 										logprintf(LOG_ERR, "could not compile regex for wunderground rain");
@@ -354,13 +333,12 @@ static void *thread(void *param) {
 										rainfc = 0;
 									} else {
 										logprintf(LOG_INFO, "rain expected next hour");
-										rainfc = 1;															
+										rainfc = 1;
 									}
 									regfree(&regex);
-									
-#endif																										
 
-								
+#endif
+
 								} else {
 									logprintf(LOG_NOTICE, "api.wunderground.com json has no forecast data");
 								}
@@ -368,7 +346,7 @@ static void *thread(void *param) {
 
 								logprintf(LOG_NOTICE, "api.wunderground.com json has no hourly_forecast key");
 							}
-							
+
 							if((jtemp = json_find_member(jdata, "alerts")) != NULL) {
 								if((jtemp2 = json_first_child(jtemp)) != NULL) {
 									has_alert = 1;
@@ -386,24 +364,7 @@ static void *thread(void *param) {
 										logprintf(LOG_NOTICE, "api.wunderground.com json has no expires key");
 									}
 
-															
-									alarm_descr2 = MALLOC(strlen(alarm_descr)+1);
-									if(!alarm_descr2) {
-										logprintf(LOG_ERR, "out of memory");
-										exit(EXIT_FAILURE);
-									}
-									strcpy(alarm_descr2, alarm_descr);	
-
-															
-									level_descr2 = MALLOC(strlen(level_descr)+1);
-									if(!level_descr2) {
-										logprintf(LOG_ERR, "out of memory");
-										exit(EXIT_FAILURE);
-									}
-									strcpy(level_descr2, level_descr);	
-
-									logprintf(LOG_INFO, "Alarm text: %s, Level: %s, Alarm time: %s, Alarm Expires: %s", alarm_descr2, level_descr2, alarm_date, alarm_exp);	
-									//alarm_descr=strndup(alarm_descr, 23);
+									logprintf(LOG_INFO, "Alarm text: %s, Level: %s, Alarm time: %s, Alarm Expires: %s", alarm_descr, level_descr, alarm_date, alarm_exp);	
 									if((tz = coord2tz(longitude, latitude)) == NULL) {
 										logprintf(LOG_INFO, "wunderful could not determine timezone");
 										tz = "UTC";
@@ -411,25 +372,25 @@ static void *thread(void *param) {
 										logprintf(LOG_INFO, "display location %.6f:%.6f seems to be in timezone: %s", longitude, latitude, tz);
 									}
 									utc_offset = tzoffset("UTC", tz);
-		
+
 									logprintf(LOG_DEBUG, "Time offset: %d", utc_offset);
-									
+
 									time_t timestamp;
-									
+
 									timestamp = time(NULL);
 									dst = isdst(timestamp, tz);
 									logprintf(LOG_DEBUG, "DST: %d", dst);
-									
+
 									if (strptime(alarm_date, "%Y-%m-%d %H:%M:%S GMT", &alarmtime) == 0) { //UTC time!
 										logprintf(LOG_NOTICE, "api.wunderground.com invalid alarm time");
 									} else {
-										
+
 										alarmtime.tm_hour += utc_offset;
 										alarmtime.tm_hour += dst;
 										if(alarmtime.tm_hour > 23) {
 											alarmtime.tm_hour -= 24;
 										}
-										
+
 										//logprintf(LOG_DEBUG, "UTC: %d DST: %d", alarmtime.tm_hour, dst);
 
 									}
@@ -442,15 +403,14 @@ static void *thread(void *param) {
 											exptime.tm_hour -= 24;
 										}
 									}
-		
+
 								} else {
-									
 									logprintf(LOG_INFO, "api.wunderground.com json has no alert data");
 								}
 							} else {
 								logprintf(LOG_NOTICE, "api.wunderground.com json has no alerts key");		
 							}
-												
+
 						if(has_current == 1 || has_forecast == 1) {
 							wunderful->message = json_mkobject();
 							JsonNode *code = json_mkobject();
@@ -458,7 +418,7 @@ static void *thread(void *param) {
 							json_append_member(code, "api", json_mkstring(wnode->api));
 							json_append_member(code, "location", json_mkstring(wnode->location));
 							json_append_member(code, "country", json_mkstring(wnode->country));
-						
+
 							if(has_current == 1) {
 								json_append_member(code, "temperature", json_mknumber((double)round(temp), 0));
 								json_append_member(code, "humidity", json_mknumber((double)humi, 0));
@@ -473,16 +433,12 @@ static void *thread(void *param) {
 								json_append_member(code, "stationid", json_mkstring(stationid));
 								json_append_member(code, "city", json_mkstring(city));
 								json_append_member(code, "obstime", json_mknumber((double)obstime.tm_hour + ((double)obstime.tm_min / 100), 2));
-								//logprintf(LOG_DEBUG, "*************************** weather: %s", weather2);
-								json_append_member(code, "weather", json_mkstring(weather2));
-								FREE(weather2);
+								json_append_member(code, "weather", json_mkstring(weather));
 								FREE(winddir2);
 							}
 							if(has_forecast == 1) {
-								//logprintf(LOG_DEBUG, "*************************** weatherfc: %s", weatherfc2);					
-								json_append_member(code, "weatherfc", json_mkstring(weatherfc2));
-								//logprintf(LOG_DEBUG, "*************************** winddirfc: %s", winddirfc2);
-								json_append_member(code, "dirfc", json_mkstring(winddirfc2));
+								json_append_member(code, "weatherfc", json_mkstring(weatherfc));
+								json_append_member(code, "dirfc", json_mkstring(winddirfc));
 								json_append_member(code, "tempfc", json_mknumber(tempfc, 0));
 								json_append_member(code, "speedfc", json_mknumber(windspeedfc, 0));
 								json_append_member(code, "degreesfc", json_mknumber(winddegreesfc, 0));
@@ -493,21 +449,16 @@ static void *thread(void *param) {
 								json_append_member(code, "popfc", json_mknumber(popfc, 0));
 								json_append_member(code, "humidityfc", json_mknumber(humifc, 0));
 								json_append_member(code, "fcttime", json_mknumber(fcttime, 2));
-								FREE(weatherfc2);
-								FREE(winddirfc2);
-	
+
 							}
 							if(has_alert == 1) {
 								json_append_member(code, "alarmtype", json_mknumber(alarm_type, 0));
 								json_append_member(code, "alarmlevel", json_mknumber(alarm_level, 0));
-								//logprintf(LOG_DEBUG, "level_descr: %s", level_descr);
-								json_append_member(code, "leveltext", json_mkstring(level_descr2));
-								//logprintf(LOG_DEBUG, "alarm_text: %s", alarm_descr);
-								json_append_member(code, "alarmtext", json_mkstring(alarm_descr2));
+								json_append_member(code, "leveltext", json_mkstring(level_descr));
+								json_append_member(code, "alarmtext", json_mkstring(alarm_descr));
 								json_append_member(code, "alarmstart", json_mknumber((double)alarmtime.tm_hour + ((double)alarmtime.tm_min / 100), 2));
 								json_append_member(code, "alarmend", json_mknumber((double)exptime.tm_hour + ((double)exptime.tm_min / 100), 2));
-								FREE(alarm_descr2);
-								FREE(level_descr2);
+
 							}
 							else{	
 								json_append_member(code, "alarmtype", json_mknumber(0, 0));
@@ -515,14 +466,13 @@ static void *thread(void *param) {
 								json_append_member(code, "leveltext", json_mkstring("None"));
 								json_append_member(code, "alarmtext", json_mkstring("None"));
 							}
-			
+
 							json_append_member(code, "update", json_mknumber(0, 0));
 
 							json_append_member(wunderful->message, "message", code);
 							json_append_member(wunderful->message, "origin", json_mkstring("receiver"));
 							json_append_member(wunderful->message, "protocol", json_mkstring(wunderful->id));
 
-						
 							if(pilight.broadcast != NULL) {
 								pilight.broadcast(wunderful->id, wunderful->message, PROTOCOL);
 							}
@@ -532,7 +482,7 @@ static void *thread(void *param) {
 							wnode->update = time(NULL);
 							json_delete(jdata);
 						}
-			
+
 						} else {
 							logprintf(LOG_NOTICE, "api.wunderground.com json could not be parsed");
 						}
@@ -545,12 +495,12 @@ static void *thread(void *param) {
 			} else {
 				logprintf(LOG_NOTICE, "could not reach api.wundergrond.com");
 			}
-		
+
 			if(data != NULL) {
 				FREE(data);
 				data = NULL;
 			}
-		
+
 		} else {
 			wunderful->message = json_mkobject();
 			JsonNode *code = json_mkobject();
@@ -613,14 +563,14 @@ static int createCode(JsonNode *code) {
 	}
 
 	if(json_find_string(code, "country", &country) == 0 &&
-	   json_find_string(code, "location", &location) == 0 &&
-	   json_find_string(code, "api", &api) == 0 &&
-	   json_find_number(code, "update", &itmp) == 0) {
+	  json_find_string(code, "location", &location) == 0 &&
+	  json_find_string(code, "api", &api) == 0 &&
+	  json_find_number(code, "update", &itmp) == 0) {
 
 		while(wtmp) {
 			if(strcmp(wtmp->country, country) == 0
-			   && strcmp(wtmp->location, location) == 0
-			   && strcmp(wtmp->api, api) == 0) {
+				&& strcmp(wtmp->location, location) == 0
+				&& strcmp(wtmp->api, api) == 0) {
 				if((currenttime-wtmp->update) > INTERVAL) {
 					pthread_mutex_unlock(&wtmp->thread->mutex);
 					pthread_cond_signal(&wtmp->thread->cond);
@@ -715,7 +665,7 @@ void wunderfulInit(void) {
 	options_add(&wunderful->options, '6', "alarmend", OPTION_HAS_VALUE, DEVICES_VALUE, JSON_NUMBER, NULL, NULL);	
 	options_add(&wunderful->options, '7', "leveltext", OPTION_HAS_VALUE, DEVICES_VALUE, JSON_STRING, NULL, NULL);	
 	options_add(&wunderful->options, '8', "stationid", OPTION_HAS_VALUE, DEVICES_VALUE, JSON_STRING, NULL, NULL);
-	
+
 	options_add(&wunderful->options, 'u', "update", OPTION_HAS_VALUE, DEVICES_VALUE, JSON_NUMBER, NULL, NULL);
 
 	// options_add(&wunderful->options, 0, "decimals", OPTION_HAS_VALUE, DEVICES_SETTING, JSON_NUMBER, (void *)2, "[0-9]");
