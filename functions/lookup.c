@@ -116,15 +116,15 @@ static int run(struct rules_t *obj, struct JsonNode *arguments, char **ret, enum
 
 	//second parameter is name of variable or device value to lookup (needle)
 	has_option = 0;
-	param2 = MALLOC(strlen(childs->string_)+1);
-	if(!param2) {
+	needle = MALLOC(strlen(childs->string_)+1);
+	if(!needle) {
 		logprintf(LOG_ERR, "out of memory");
 		exit(EXIT_FAILURE);
 	}
 
-	strcpy(param2, childs->string_);
+	strcpy(needle, childs->string_);
 
-	device = strtok(param2, ".");
+	device = strtok(needle, ".");
 	if(strlen(device) > 0) {
 		//possibly device option
 		option = strtok(NULL, ".");
@@ -135,8 +135,19 @@ static int run(struct rules_t *obj, struct JsonNode *arguments, char **ret, enum
 				}
 				opt = dev->settings;
 				while(opt) {
-					if(strcmp(opt->name, option) == 0) {
-						needle = opt->values->string_; //use option value
+					if(strcmp(opt->name, option) == 0) {//use option value
+						if(opt->values->type == JSON_STRING) {
+							if(strlen(opt->values->string_) > strlen(childs->string_)) {
+								needle = REALLOC(needle, strlen(opt->values->string_)+1);
+								if(!needle) {
+									logprintf(LOG_ERR, "out of memory");
+									exit(EXIT_FAILURE);
+								}
+							}
+							strcpy(needle,opt->values->string_); 
+						} else {
+							sprintf(needle, "%d", (int)opt->values->number_);
+						}
 						has_option = 1;
 					}
 					opt = opt->next;
@@ -145,7 +156,7 @@ static int run(struct rules_t *obj, struct JsonNode *arguments, char **ret, enum
 		}
 	}
 	if(has_option == 0) {
-		needle = childs->string_; //no option value found, restore needle to original
+		strcpy(needle,childs->string_); //no option value found, restore needle to original
 	}
 	trm(&needle);
 	
@@ -230,7 +241,8 @@ static int run(struct rules_t *obj, struct JsonNode *arguments, char **ret, enum
 	}
 
 	FREE(param1);
-	FREE(param2);
+	FREE(needle);
+	FREE(needle);
 	FREE(haystack_copy);
 	FREE(key);
 	FREE(defval);
@@ -249,7 +261,7 @@ void functionLookupInit(void) {
 #if defined(MODULE) && !defined(_WIN32)
 void compatibility(struct module_t *module) {
 	module->name = "lookup";
-	module->version = "0.1";
+	module->version = "0.2";
 	module->reqversion = "6.0";
 	module->reqcommit = "94";
 }
