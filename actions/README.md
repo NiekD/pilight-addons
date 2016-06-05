@@ -21,6 +21,6 @@ This will create a new file with the text "My line of text"
  or, more advanced
 IF ... file TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT DATE_FORMAT(dt, %Y-%m-%d %H:%M:%S) Switch state switch.state
 ```
-The second one is a typical logging example, with a new file created every month and log lines with a dtae/time prefix.
+The second one is a typical logging example, with a new file created every month and log lines with a date/time prefix.
 
 Note the spaces before and after the functions and device values. These are required for proper processing by the eventing system, but ALL spaces in the resulting file name are removed by the file action.
