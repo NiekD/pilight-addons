@@ -7,9 +7,10 @@ Three protocols:
 * wunderful, an extended version of the wunderground protocol
 * generic_counter, a counter that can be manipulated in rules with  the count action.
 
-One action:
+Two actions:
 
 * count, to be used in rules to update a generic_counter device (increment, decrement or set to a specific value).
+* file, enables you to write lines of text to files from your rules.
 
 One function:
 
