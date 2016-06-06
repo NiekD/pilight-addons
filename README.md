@@ -16,6 +16,3 @@ One function:
 
 * LOOKUP, which can fetch individual values from a query string (key=value pairs separated by "&"). Usefull in combination with the webswitch protocol and for translation/conversion of device variables.
  
-One operator:
-
-* ISNOT, returns true if two strings are not equal (so the opposite of IS)
