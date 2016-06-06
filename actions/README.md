@@ -22,7 +22,7 @@ This will create a new file "myfile.txt" with the text "My line of text" as cont
 
 A more advanced example:
 ```
-IF ... file TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT DATE_FORMAT(dt, %Y-%m-%d %H:%M:%S) Switch state switch.state
+IF ... file TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT DATE_FORMAT(dt, %Y-%m-%d %H:%M:%S) Switch state: switch.state
 ```
 This is a typical logging example, with a new file created every month and log lines with a date/time prefix.
 
