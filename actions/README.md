@@ -16,11 +16,11 @@ The file action has a MODE parameter."MODE new" tells the action to create a new
 
 ## Usage
 ```
-IF ... THEN file TO /home/pi/mylogs/mylog1.log MODE new TEXT My line of text
+IF ... THEN file TO /home/pi/mylogs/myfile.txt MODE new TEXT My line of text
 ```
-This will create a new file with the text "My line of text"
+This will create a new file "myfile.txt" with the text "My line of text" as content.
 
-a more advanced example:
+A more advanced example:
 ```
 IF ... file TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT DATE_FORMAT(dt, %Y-%m-%d %H:%M:%S) Switch state switch.state
 ```
