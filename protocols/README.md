@@ -30,7 +30,7 @@ If the response received matches the "on_succes" string, the switch moves to the
 If the connection fails (returncode is not 200),  "response" is set to "\*CONNECTION FAILED\*". This default string can be replaced by a string of your own choice by adding the optional "err_response" option to the webswitch config. 
 
 If the response is in the form of a query string (one or more name=value pairs separated by "&", like in the config example shown above), you can let the webswitch check one or more of the values in it, otherwise it will check the whole string. This is done by entering name=value pairs for "on_success" and "off_success" as shown in the config example above. Only if all these name=value pairs are present in the result (the order is irrelevant) the webswitch goes to the new state.
-If you want to use one or more of the values in your rules, you can use the VAR function to select them by name.
+If you want to use one or more of the values in your rules, you can use the LOOKUP function to select them by name.
 
 Switching from "Running" to "Stopped" works the same way using the corresponding uri -query and success values.
 
