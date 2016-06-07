@@ -16,7 +16,7 @@ One function:
 
 * LOOKUP, which can fetch individual values from a query string (key=value pairs separated by "&"). Usefull in combination with the webswitch protocol and for translation/conversion of device variables.
  
-More details and exaples of usage can be found in each of the subfolders of this repository.
+More details and examples of usage can be found in each of the subfolders of this repository.
  
 ## Installation
 All addons can be built as modules to be installed in the appropriate pilight folders. The easiest way to do that is by using the installation shell script you can find in this folder. This script will compile and install the selected addons. If you don't need some of the installed modules installed by the script you can simply delete them afterwards.
