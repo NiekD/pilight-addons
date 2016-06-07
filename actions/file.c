@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2016 CurlyMo & Niek
+	Copyright (C) 2013 - 2015 CurlyMo
 
 	This file is part of pilight.
 
@@ -33,18 +33,18 @@
 #include "file.h"
 
 static char* strip(char* input) {
-    int loop;
-    char *output = (char*) malloc (strlen(input) + 1);
-    char *dest = output;
-
-    if (output)
-    {
-        for (loop=0; loop<strlen(input); loop++)
-            if (input[loop] != ' ')
-                *dest++ = input[loop];
-        *dest = '\0';
-    }
-    return output;
+	int loop;
+	char *output = (char*) malloc (strlen(input) + 1);
+	char *dest = output;
+	
+	if (output)
+	{
+	for (loop=0; loop<strlen(input); loop++)
+		if (input[loop] != ' ')
+		*dest++ = input[loop];
+		*dest = '\0';
+	}
+	return output;
 }
 
 static int checkArguments(struct rules_actions_t *obj) {
@@ -102,7 +102,7 @@ static int checkArguments(struct rules_actions_t *obj) {
 	}
 	jval = json_find_element(jvalues, 0);
 		
-	if(jval->tag != JSON_STRING || ((strcmp(jval->string_, "new") != 0) && (strcmp(jval->string_, "append") != 0)))  {
+	if(jval->tag != JSON_STRING || ((strcmp(jval->string_, "new") != 0) && (strcmp(jval->string_, "append") != 0))) {
 		logprintf(LOG_ERR, "file action \"MODE\" argument must be either \"new\" or \"append\"");
 		return -1;
 	}
@@ -135,8 +135,8 @@ static void *thread(void *param) {
 	struct JsonNode *jval1 = NULL;
 	struct JsonNode *jval2 = NULL;
 	struct JsonNode *jval3 = NULL;
-    char *mode = "a", *file = NULL;
-    FILE * fp;
+	char *mode = "a", *file = NULL;
+	FILE * fp;
 	action_file->nrthreads++;
 
 	jto = json_find_member(arguments, "TO");
@@ -180,14 +180,15 @@ static void *thread(void *param) {
 					}
 					fclose(fp);
 				} else {
-					logprintf(LOG_NOTICE, "file action couldn't write to %s", jval1->string_);			
+					logprintf(LOG_NOTICE, "file action couldn't open \"%s\" with mode \"%s\"", jval1->string_, jval2->string_);			
 				}
+				FREE(file);
+				FREE(mode);
 			} else {
-				logprintf(LOG_NOTICE, "file action couldn't open %s", jval1->string_);
+				logprintf(LOG_NOTICE, "file action couldn't operate due to missing or bad parameters");
 			}
 		}
 	}
-
 
 	action_file->nrthreads--;
 
