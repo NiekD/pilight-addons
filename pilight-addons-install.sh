@@ -74,7 +74,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	# Copy the protocol modules to destination
 	echo "${green}Copy the protocolmodules to their destination....${reset}"
 	mkdir -p ${PROTOCOL_DESTINATION_FOLDER} || { echo "${red}Creation of ${PROTOCOL_DESTINATION_FOLDER} failed!${reset}"; exit 1; }
-	cp webswitch.so wugstation.so generic_counter.so${PROTOCOL_DESTINATION_FOLDER} || { echo "${red}Copying to destination ${PROTOCOL_DESTINATION_FOLDER} failed!${reset}"; exit 1; }
+	cp webswitch.so wugstation.so generic_counter.so ${PROTOCOL_DESTINATION_FOLDER} || { echo "${red}Copying to destination ${PROTOCOL_DESTINATION_FOLDER} failed!${reset}"; exit 1; }
 
 fi
 
