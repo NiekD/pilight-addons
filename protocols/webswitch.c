@@ -100,7 +100,6 @@ static void *thread(void *param) {
 	json_find_string(json, "off_success", &offsuccess);
 	json_find_string(json, "err_response", &errresponse);
 	json_find_string(json, "response", &response);
-	logprintf(LOG_DEBUG, response);
 	json_find_string(json, "state", &state);
 
 	struct settings_t *lnode = MALLOC(sizeof(struct settings_t));
@@ -220,6 +219,7 @@ static void *thread(void *param) {
 
 	lnode->thread = pnode;
 	lnode->laststate = -1;
+	lnode->currentstate = -1;
 
 	lnode->next = settings;
 	settings = lnode;
@@ -237,6 +237,9 @@ static void *thread(void *param) {
 				JsonNode *code = json_mkobject();
 				json_append_member(code, "id", json_mknumber(lnode->id, 0));
 				json_append_member(code, "response", json_mkstring(lnode->response));
+				if(lnode->currentstate == -1 && lnode->laststate == -1) {
+					lnode->laststate=lnode->newstate;
+				}
 				if(lnode->newstate == 1) {
 					lnode->currentstate = 1;
 					json_append_member(code, "state", json_mkstring("running"));
@@ -251,7 +254,7 @@ static void *thread(void *param) {
 				if(lnode->currentstate != lnode->laststate) {
 					lnode->laststate = lnode->currentstate;
 
-					if(pilight.broadcast != NULL) {
+					if(pilight.broadcast != NULL ) {
 						pilight.broadcast(webswitch->id, message, PROTOCOL);
 					}
 				}
@@ -270,7 +273,6 @@ static void *thread(void *param) {
 static struct threadqueue_t *initDev(JsonNode *jdevice) {
 
 	loop = 1;
-	int temp =  0;
 	char *output = json_stringify(jdevice, NULL);
 	JsonNode *json = json_decode(output);
 	json_free(output);
@@ -284,7 +286,7 @@ static void *execute(void *param) {
 	char *data = NULL, url[1024], *contype = NULL, *post = NULL;
 	char typebuf[255], *tp = typebuf, *successcode, *token;
 	int ret = 0, size = 0, meth = 0;
-	unsigned int i = 0, match = 0;
+	unsigned int match = 0;
 	
 	if(strcmp(p->method, "POST") == 0) {
 		contype = MALLOC(40);
@@ -301,6 +303,7 @@ static void *execute(void *param) {
 			fprintf(stderr, "out of memory\n");
 			exit(EXIT_FAILURE);
 		}
+		free_post = 1;
 		meth = 1;
 	}
 	if(p->laststate == 0) { 
@@ -342,60 +345,69 @@ static void *execute(void *param) {
 	logprintf(LOG_DEBUG, "Webswitch: Calling %s", url);
 	data = NULL;
 	if (meth == 0) {
-		logprintf(LOG_DEBUG, "Webswitch: Method GET");
 		data = http_get_content(url, &tp, &ret, &size);
 	}
 	else {
-		logprintf(LOG_DEBUG, "Webswitch: Method POST");
 		data = http_post_content(url, &tp, &ret, &size, contype, post);
 	}
+	if(data != NULL) {
+		logprintf(LOG_DEBUG, "Webswitch: Returncode: %i, Type: %s, Data: %s, Size: %i", ret, tp, data, size);
+	}
+	else {
+		logprintf(LOG_DEBUG, "Webswitch: Returncode: %i, Data: NULL", ret);
+	}
+	if((p->response = MALLOC(BUFFER_SIZE)) == NULL) {
+		fprintf(stderr, "out of memory\n");
+		exit(EXIT_FAILURE);
+	}
 	
-	logprintf(LOG_DEBUG, "Webswitch: Returncode: %i, Type: %s, Data: %s, Size: %i", ret, tp, data, size);
-
 	if(ret == 200) {
-	if(data == NULL || strlen(data) == 0) {
-		logprintf(LOG_NOTICE, "Webswitch: %s didn't return success code. Expected \"%s\", got nothing", url, successcode);
-		if (data == NULL) {
-			strcpy(p->response, "null");
-		} else {
-			strcpy(p->response, data);
-		}
-	} else {
-			if((p->response = MALLOC(strlen(data)+1)) == NULL) {
-				fprintf(stderr, "out of memory\n");
-				exit(EXIT_FAILURE);
+		if(data == NULL || strlen(data) == 0) {
+			logprintf(LOG_NOTICE, "Webswitch: %s didn't return success code. Expected \"%s\", got nothing", url, successcode);
+			if (data == NULL) {
+				strcpy(p->response, "*NULL*");
+			} 
+			else {
+				strcpy(p->response, "*EMPTY*");
 			}
-			match = 0;
-			strcpy(p->response, data);
-			token = strtok(successcode, "&");
-			if(token != NULL && strlen(token) > 0) {
-				if(strstr(data, token) != NULL) {
-					match = 1;
-					while ((token = strtok(NULL, "&")) && match == 1) {
-						if(strlen(token) > 0) {
-							if(strstr(data, token) == NULL) {
-								match = 0;
+		} 
+		else {
+				if (size > BUFFER_SIZE) {
+					data[BUFFER_SIZE - 1] = '\0';
+					logprintf(LOG_NOTICE, "Response size %i is too big, truncated to %i", size, BUFFER_SIZE - 1);
+				}
+				//data = json_encode_string(data);
+				match = 0;
+				strcpy(p->response, data);
+				token = strtok(successcode, "&");
+				if(token != NULL && strlen(token) > 0) {
+					if(strstr(data, token) != NULL) {
+						match = 1;
+						while ((token = strtok(NULL, "&")) && match == 1) {
+							if(strlen(token) > 0) {
+								if(strstr(data, token) == NULL) {
+									match = 0;
+								}
 							}
 						}
+					} 
+					else {
+						//one or more parameters didn't match
+						logprintf(LOG_NOTICE, "Webswitch: %s didn't return success code. Expected \"%s\", got \"%s\"", url, successcode, data);
 					}
-				}
-				else {
-					//one or more parameters didn't match
-					logprintf(LOG_NOTICE, "Webswitch: %s didn't return success code. Expected \"%s\", got \"%s\"", url, successcode, data);
+				} 
+				else { 
+					//response doesn't contain parameter list, so compare full response with expected response
+					if(strstr(data, successcode) == NULL) {
+						// No parameterlist, no match 
+						logprintf(LOG_NOTICE, "Webswitch: %s didn't return success code. Expected \"%s\", got \"%s\"", url, successcode, data);
+					} 
+					else {
+						// No parameter list, entire expected response matched
+						match = 1;
+					}	
 				}
 			}
-			else { 
-				//response doesn't contain parameter list, so compare full response with expected response
-				if(strstr(data, successcode) == NULL) {
-					// No parameterlist, no match 
-					logprintf(LOG_NOTICE, "Webswitch: %s didn't return success code. Expected \"%s\", got \"%s\"", url, successcode, data);
-				}
-				else {
-					// No parameter list, entire expected response matched
-					match = 1;
-				}	
-			}
-		}
 	} else {
 		if(p->err_response != NULL) {
 			strcpy(p->response, p->err_response);
@@ -423,7 +435,9 @@ static void *execute(void *param) {
 	if(free_post) {
 		FREE(post);
 	}
-
+	if(free_successcode) {
+		FREE(successcode);
+	}
 	p->wait = 0;
 	memset(&p->pth, '\0', sizeof(pthread_t));
 	p->hasthread = 0;
@@ -436,6 +450,7 @@ static void *execute(void *param) {
 }
 
 static int createCode(JsonNode *code) {
+	double itmp = 0;
 	int state = -1;
 	double id = 0;
 	int free_response = 0;
