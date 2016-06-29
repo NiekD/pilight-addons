@@ -42,12 +42,12 @@ Some examples
 
 ```
 IF ... THEN http GET http://192.168.2.10/test.cgi
-IF ... THEN http POST http://192.168.2.10/
+IF ... THEN http POST https://192.168.2.10/
 IF ... THEN http GET http://192.168.2.10/ PARAM c=start
 IF ... THEN http GET http://192.168.2.10/ RESULT mylabel
 IF ... THEN http GET http://192.168.2.10/ PARAM c= mysensor.state RESULT mylabel
 ```
-Note the space between the "=" sign and the device varible name in the last example. This space is required for the eventing system to recognize the device variable (or function). 
+Note the space between the "=" sign and the device variable name in the last example. This space is required for the eventing system to recognize the device variable (or function). 
 The action will automaticly remove all spaces from both url and parameters before the request is sent.
 
 With the LOOKUP function you can easily convert device values to required parameter values:
@@ -56,7 +56,7 @@ IF ... THEN http POST http://192.168.2.10/ PARAM c= LOOKUP(on=start&off=stop, my
 ````
 Again, the space after "=" is required.
 
-In the same manner you can also create url's dynamicaly:
+In the same manner you can also create url's dynamically:
 ```
 IF ... THEN http GET http://somedomain.com/ LOOKUP(on=right.cgi/&off=left.cgi/, myswitch.state)
 ```
