@@ -42,10 +42,15 @@ Some examples
 
 ```
 IF ... THEN http GET http://192.168.2.10/test.cgi
+
 IF ... THEN http POST https://192.168.2.10/
-IF ... THEN http GET http://192.168.2.10/ PARAM c=start
+
+IF ... THEN http GET http://192.168.2.10/ PARAM command=start&reply=yes
+
 IF ... THEN http GET http://192.168.2.10/ RESULT mylabel
+
 IF ... THEN http GET http://192.168.2.10/ PARAM c= mysensor.state RESULT mylabel
+
 ```
 Note the space between the "=" sign and the device variable name in the last example. This space is required for the eventing system to recognize the device variable (or function). 
 The action will automaticly remove all spaces from both url and parameters before the request is sent.
