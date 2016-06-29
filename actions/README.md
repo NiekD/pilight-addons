@@ -29,7 +29,7 @@ This is a typical logging example, with a new file created every month and log l
 Note the spaces before and after the functions and device values. These are required for proper processing by the eventing system, but ALL spaces in the resulting file name are removed by the file action.
 
 # http action
-The http action can be used in pilight rules to send HTTP POST or GET requests, either with or without parameters. The result of the request can optionally be stored in a generec label and can then be displayed in the gui, and/or can be used in other rules.
+The http action can be used in pilight rules to send HTTP POST or GET requests, either with or without parameters. The result of the request can optionally be stored in a generic label and can then be displayed in the gui, and/or can be used in other rules.
 
 ## Usage
 ```
