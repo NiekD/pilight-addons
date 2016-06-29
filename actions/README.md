@@ -27,3 +27,36 @@ IF ... file TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT
 This is a typical logging example, with a new file created every month and log lines with a date/time prefix.
 
 Note the spaces before and after the functions and device values. These are required for proper processing by the eventing system, but ALL spaces in the resulting file name are removed by the file action.
+
+# http action
+The http action can be used in pilight rules to send HTTP POST or GET requests, either with or without parameters. The result of the request can optionally be stored in a generec label and can then be displayed in the gui, and/or can be used in other rules.
+
+## Usage
+```
+IF ... THEN http GET|POST <url> [PARAM <parameters>] [RESULT <label device>]
+```
+GET or POST  with url are mandatory, PARAM and RESULT are optional.
+Url and parameters can be strings or device values or combinations of both
+
+Some examples
+
+```
+IF ... THEN http GET http://192.168.2.10/test.cgi
+IF ... THEN http POST http://192.168.2.10/
+IF ... THEN http GET http://192.168.2.10/ PARAM c=start
+IF ... THEN http GET http://192.168.2.10/ RESULT mylabel
+IF ... THEN http GET http://192.168.2.10/ PARAM c= mysensor.state RESULT mylabel
+```
+Note the space between the "=" sign and the device varible name in the last example. This space is required for the eventing system to recognize the device variable (or function). 
+The action will automaticly remove all spaces from both url and parameters before the request is sent.
+
+With the LOOKUP function you can easily convert device values to required parameter values:
+````
+IF ... THEN http POST http://192.168.2.10/ PARAM c= LOOKUP(on=start&off=stop, myswitch.state)
+````
+Again, the space after "=" is required.
+
+In the same manner you can also create url's dynamicaly:
+```
+IF ... THEN http GET http://somedomain.com/ LOOKUP(on=right.cgi/&off=left.cgi/, myswitch.state)
+```
