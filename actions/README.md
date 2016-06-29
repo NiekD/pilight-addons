@@ -54,9 +54,10 @@ With the LOOKUP function you can easily convert device values to required parame
 ````
 IF ... THEN http POST http://192.168.2.10/ PARAM c= LOOKUP(on=start&off=stop, myswitch.state)
 ````
-Again, the space after "=" is required.
 
 In the same manner you can also create url's dynamically:
 ```
 IF ... THEN http GET http://somedomain.com/ LOOKUP(on=right.cgi/&off=left.cgi/, myswitch.state)
 ```
+
+Again, the spaces after "=" are required.
