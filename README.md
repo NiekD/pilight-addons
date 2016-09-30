@@ -10,7 +10,7 @@ Three protocols:
 Three actions:
 
 * count, to be used in rules to update a generic_counter device (increment, decrement or set to a specific value).
-* file, enables you to write lines of text to files from your rules.
+* write, enables you to write lines of text to files from your rules.
 * http, enables you to call remote services via HTTP(S) GET or POST.
 
 One function:
