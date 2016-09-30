@@ -103,7 +103,7 @@ fi
 echo "${green}Install additional action(s):${reset}"
 echo
 echo "- count"
-echo "- file"
+echo "- write"
 echo "- http"
 echo
 read -p "${yellow}Do you want to install these additional actions(s)  [y/n]?${reset}" -n 1 -r
@@ -116,13 +116,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	# Compile action modules
 	echo "${green}Compile the action module(s)....${reset}"
 	gcc -fPIC -shared ${ACTION_LIBS_FOLDER}/count.c -Ilibs/pilight/events/ -Iinc/ -o count.so -DMODULE=1
-	gcc -fPIC -shared ${ACTION_LIBS_FOLDER}/file.c -Ilibs/pilight/events/ -Iinc/ -o file.so -DMODULE=1
+	gcc -fPIC -shared ${ACTION_LIBS_FOLDER}/write.c -Ilibs/pilight/events/ -Iinc/ -o write.so -DMODULE=1
 	gcc -fPIC -shared ${ACTION_LIBS_FOLDER}/http.c -Ilibs/pilight/events/ -Iinc/ -o http.so -DMODULE=1
 
 	# Copy the action modules to destination
 	echo "${green}Copy the action module(s) to their destination....${reset}"
 	mkdir -p ${ACTION_DESTINATION_FOLDER} || { echo "${red}Creation of ${ACTION_DESTINATION_FOLDER} failed!${reset}"; exit 1; }
-	cp count.so file.so http.so ${ACTION_DESTINATION_FOLDER} || { echo "${red}Copying to destination ${ACTION_DESTINATION_FOLDER} failed!${reset}"; exit 1; }
+	cp count.so write.so http.so ${ACTION_DESTINATION_FOLDER} || { echo "${red}Copying to destination ${ACTION_DESTINATION_FOLDER} failed!${reset}"; exit 1; }
 
 fi
 
