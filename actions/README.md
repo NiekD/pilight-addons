@@ -9,20 +9,20 @@ IF ... THEN count DEVICE counter1 DOWN 2
  or
 IF ... THEN count DEVICE counter1 TO 20
 ```
-# file action
-The file action can be used to write lines of text to files. 
+# write action
+The write action can be used to write lines of text to files. 
 Both file name and the text to be written may contain device values and functions. 
-The file action has a MODE parameter. "MODE new" tells the action to create a new file (and eventually overwrite an existing file with the same name) and write the text to it. "MODE append" is meant to be used if the text must be appended to an existing file. If the  file doesn't exist yet, the file will be created. The location for the file must be an existing folder allowing write access.
+The write action has a MODE parameter. "MODE new" tells the action to create a new file (and eventually overwrite an existing file with the same name) and write the text to it. "MODE append" is meant to be used if the text must be appended to an existing file. If the  file doesn't exist yet, the file will be created. The location for the file must be an existing folder allowing write access.
 
 ## Usage
 ```
-IF ... THEN file TO /home/pi/mylogs/myfile.txt MODE new TEXT My line of text
+IF ... THEN write TO /home/pi/mylogs/myfile.txt MODE new TEXT My line of text
 ```
 This will create a new file "myfile.txt" with the text "My line of text" as content.
 
 A more advanced example:
 ```
-IF ... file TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT DATE_FORMAT(dt, %Y-%m-%d %H:%M:%S) Switch state: switch.state
+IF ... write TO /home/pi/mylogs/mylog DATE_FORMAT(dt, %Y%m) .log MODE append TEXT DATE_FORMAT(dt, %Y-%m-%d %H:%M:%S) Switch state: switch.state
 ```
 This is a typical logging example, with a new file created every month and log lines with a date/time prefix.
 
