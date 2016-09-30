@@ -276,20 +276,25 @@ static void *thread(void *param) {
 	if(pilight.control != NULL && result != 0) {
 		jobj = json_mkobject();
 		if(ret == 200) {
-			logprintf(LOG_DEBUG, "http action succeeded, received %s", data);
-			if(size > 290) {
-				logprintf(LOG_NOTICE, "http action response size %i is too big (limit is 290), response truncated", size);
-				data[291] = '\0';
-				logprintf(LOG_DEBUG, "truncated response: %s", data);
+			if(data != NULL) {
+				logprintf(LOG_DEBUG, "http action succeeded, received %s", data);
+				if(size > 290) {
+					logprintf(LOG_NOTICE, "http action response size %i is too big (limit is 290), response truncated", size);
+					data[291] = '\0';
+					logprintf(LOG_DEBUG, "truncated response to: %s", data);
+				}
+				strcpy(response, data);
+				json_append_member(jobj, "label", json_mkstring(response));
+				pilight.control(pth->device, NULL, json_first_child(jobj), ACTION);
+				json_delete(jobj);
+			} else {
+				logprintf(LOG_NOTICE, "http action request to %s returned empty response", url);
+				sprintf(response, "HTTP ERROR no data");
 			}
-			strcpy(response, data);
 		} else {
 			logprintf(LOG_NOTICE, "http action request to %s failed (error %d)", url, ret);
 			sprintf(response, "HTTP ERROR %i", ret);
 		}				
-		json_append_member(jobj, "label", json_mkstring(response));
-		pilight.control(pth->device, NULL, json_first_child(jobj), ACTION);
-		json_delete(jobj);
 	}
 
 		
