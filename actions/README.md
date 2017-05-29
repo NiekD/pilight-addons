@@ -36,14 +36,16 @@ The http action can be used in pilight rules to send HTTP POST or GET requests, 
 IF ... THEN http GET|POST <url> [PARAM <parameters>] [RESULT <label device>]
 ```
 GET or POST  with url are mandatory, PARAM and RESULT are optional.
-Url and parameters can be strings or device values or combinations of both
+Url and parameters can be strings or device values or combinations of both.
+
+*N.B. A trailing slash (/) is required for the url if it refers to a path as shown in the examples below.*
 
 Some examples
 
 ```
 IF ... THEN http GET http://192.168.2.10/test.cgi
 
-IF ... THEN http POST https://192.168.2.10/
+IF ... THEN http POST https://192.168.2.10/ 
 
 IF ... THEN http GET http://192.168.2.10/ PARAM command=start&reply=yes
 
