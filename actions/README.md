@@ -31,12 +31,17 @@ Note the spaces before and after the functions and device values. These are requ
 # http action
 The http action can be used in pilight rules to send HTTP POST or GET requests, either with or without parameters. The result of the request can optionally be stored in a generic label and can then be displayed in the gui, and/or can be used in other rules.
 
+If you want to make other rules act on the result of the http(s) request, you can add a trigger that tells that the request is finished.
+The trigger is an ordinary generic_switch that is automatically switched to off when the http action starts and to on when it finishes.  
+
 ## Usage
 ```
-IF ... THEN http GET|POST <url> [PARAM <parameters>] [RESULT <label device>]
+IF ... THEN http GET|POST <url> [PARAM <parameters>] [RESULT <label device>] [TRIGGER <generic_switch device>]
 ```
-GET or POST  with url are mandatory, PARAM and RESULT are optional.
+GET or POST  with url are mandatory, PARAM, RESULT and TRIGGER are optional.
 Url and parameters can be strings or device values or combinations of both.
+
+RESULT must be a generic_label device and TRIGGER  must be a generic_switch device.
 
 *N.B. A trailing slash (/) is required for the url if it refers to a path as shown in the examples below.*
 
@@ -53,19 +58,10 @@ IF ... THEN http GET http://192.168.2.10/ RESULT mylabel
 
 IF ... THEN http GET http://192.168.2.10/ PARAM c= mysensor.state RESULT mylabel
 
+IF ... THEN http GET http://192.168.2.10/ PARAM c= mysensor.state RESULT mylabel TRIGGER mygeneric_switch
+IF mygeneric_switch.state == on THEN ...
+IF mygeneric_switch.state == on AND mylabel.label == OK THEN ...
 ```
 Note the space between the "=" sign and the device variable name in the last example. This space is required for the eventing system to recognize the device variable (or function). 
-The action will automaticly remove all spaces from both url and parameters before the request is sent.
-
-With the LOOKUP function you can easily convert device values to required parameter values:
-````
-IF ... THEN http POST http://192.168.2.10/ PARAM c= LOOKUP(on=start&off=stop, myswitch.state)
-````
-Again, the space after "=" is required.
-
-In the same manner you can also create url's dynamically:
-```
-IF ... THEN http GET http://somedomain.com/ LOOKUP(on=right.cgi/&off=left.cgi/, myswitch.state)
-```
-
+The action will automaticly remove all spaces from both url and parameters before the request is sent. If you need to retain certain spaces in the parameters you can replace each one of them with %20
 
